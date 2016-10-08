@@ -2,13 +2,15 @@ import { observable, action, computed } from 'mobx';
 import { LayoutAnimation, Animated, Dimensions, PanResponder } from 'react-native';
 import data from '../data';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const VERTICAL_THRESHOLD = 80;
 const HORIZONTAL_THRESHOLD = 60;
 
 
 class Store {
 	@observable carouselOpen = false;
+	@observable offset = { top: height/2, left: width/2 };
+
 	@observable stories = data;
 	@observable deckIdx = 0;
 	@observable paused = false;
@@ -97,10 +99,16 @@ class Store {
 	// Toggle Carousel
 	///////////////////////////////////
 
-	@action openCarousel = () => {
-		LayoutAnimation.easeInEaseOut();
-		this.carouselOpen = true;
-		this.animateIndicator();
+	@action openCarousel = (idx, offset) => {
+		this.offset = offset;
+		this.setDeckIdx(idx);
+		this.horizontalSwipe.setValue(idx * width);
+
+		requestAnimationFrame(() => {
+			LayoutAnimation.easeInEaseOut();
+			this.carouselOpen = true;
+			this.animateIndicator();
+		});
 	}
 
 	@action dismissCarousel = () => {
@@ -148,7 +156,7 @@ class Store {
 	// Toggle Indicator Animation
 	///////////////////////////////////
 
-	@action pause() {
+	@action pause = () => {
 		this.setPaused(true);
 		this.indicatorAnim.stopAnimation();
 	}

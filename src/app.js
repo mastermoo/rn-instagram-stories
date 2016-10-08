@@ -3,6 +3,7 @@ import { StyleSheet, View, Dimensions, TouchableWithoutFeedback } from 'react-na
 import { observer } from 'mobx-react/native';
 import Stories from './stories';
 import store from './stores/app';
+import Bubbles from './bubbles';
 
 const { width, height } = Dimensions.get('window');
 
@@ -11,11 +12,13 @@ export default class extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<TouchableWithoutFeedback onPress={store.openCarousel}>
-					<View style={styles.btn} />
-				</TouchableWithoutFeedback>
+				<Bubbles />
 
-				<View style={[styles.carouselWrap, (store.carouselOpen ? styles.open : styles.closed)]}>
+				<View style={[
+					styles.carouselWrap,
+					store.offset,
+					(store.carouselOpen ? styles.open : styles.closed)
+				]}>
 					<Stories />
 				</View>
 			</View>
@@ -26,8 +29,6 @@ export default class extends React.Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
 	},
 
 	carouselWrap: {
@@ -37,8 +38,6 @@ const styles = StyleSheet.create({
 	closed: {
 		width: 0,
 		height: 0,
-		top: height/2,
-		left: width/2,
 	},
 	open: {
 		width, height,
