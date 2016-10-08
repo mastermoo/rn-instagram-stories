@@ -1,7 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
+import { observer } from 'mobx-react/native';
+import store from './stores/app';
 
 
+@observer
 export default class extends React.Component {
 	constructor(props) {
 		super(props);
@@ -14,21 +17,20 @@ export default class extends React.Component {
 	}
 
 	render() {
-		const { anim, animate, seen, coming, story, i } = this.props;
+		const { animate, seen, coming, story, i } = this.props;
 		let style = {};
 
 		if (animate) {
-			console.log("Current deck:", story.idx, i, story.idx == i);
 			style = {
-				width: anim.interpolate({
+				width: store.indicatorAnim.interpolate({
 					inputRange: [0, 1],
 					outputRange: [0, this.state.width],
 					extrapolate: 'clamp'
 				})
 			};
-		} else if (seen) {
+		} else if (story.idx > i) { // seen
 			style = { flex: 1 };
-		} else if (coming) {
+		} else if (story.idx <= i) { // coming
 			style = { width: 0 };
 		}
 

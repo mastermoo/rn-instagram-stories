@@ -1,38 +1,22 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, TouchableWithoutFeedback, LayoutAnimation } from 'react-native';
+import { StyleSheet, View, Dimensions, TouchableWithoutFeedback } from 'react-native';
+import { observer } from 'mobx-react/native';
 import Stories from './stories';
+import store from './stores/app';
 
 const { width, height } = Dimensions.get('window');
 
-
+@observer
 export default class extends React.Component {
-	constructor(props) {
-	  super(props);
-	
-	  this.state = {
-	  	open: false,
-	  };
-	}
-
-	open = () => {
-		LayoutAnimation.easeInEaseOut();
-		this.setState({ open: true });
-	}
-
-	close = () => {
-		LayoutAnimation.easeInEaseOut();
-		this.setState({ open: false });
-	}
-
 	render() {
 		return (
 			<View style={styles.container}>
-				<TouchableWithoutFeedback onPress={this.open}>
+				<TouchableWithoutFeedback onPress={store.openCarousel}>
 					<View style={styles.btn} />
 				</TouchableWithoutFeedback>
 
-				<View style={[styles.foo, (this.state.open ? styles.open : styles.closed)]}>
-					<Stories close={this.close} />
+				<View style={[styles.carouselWrap, (store.carouselOpen ? styles.open : styles.closed)]}>
+					<Stories />
 				</View>
 			</View>
 		);
@@ -46,7 +30,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 
-	foo: {
+	carouselWrap: {
 		overflow: 'hidden',
 		position: 'absolute',
 	},
@@ -67,14 +51,5 @@ const styles = StyleSheet.create({
 		height: 40,
 		borderRadius: 40/2,
 		backgroundColor: 'black',
-	},
-	
-	back: {
-		backgroundColor: 'transparent',
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		bottom: 0,
-		width: 90,
 	},
 });

@@ -1,232 +1,18 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions, Animated, 
-	LayoutAnimation, StatusBar, PanResponder } from 'react-native';
+import { StyleSheet, View, Dimensions, Animated, StatusBar } from 'react-native';
+import { observer } from 'mobx-react/native';
 import Story from './story';
-import stories from './stories_data';
+import store from './stores/app';
 
 const { width, height } = Dimensions.get('window');
-const VERTICAL_THRESHOLD = 80;
-const HORIZONTAL_THRESHOLD = 60;
 
+
+@observer
 export default class extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			stories,
-			animating: false,
-			paused: false,
-			backOpacity: 0,
-			deckIdx: 0,
-		};
-
-		this.indicatorAnim = new Animated.Value(0);
-		this.pan = new Animated.Value(0);
-		this.verticalSwipe = new Animated.Value(0);
-	}
-
-
-	///////////////////////////////////
-	// Pan Methods
-	///////////////////////////////////
-
-	componentWillMount() {
-		this.horizontalSwipe = true;
-		this._panResponder = PanResponder.create({
-			onMoveShouldSetResponderCapture: () => true,
-			onMoveShouldSetPanResponderCapture: (evt, { dx, dy }) => {
-				if (Math.abs(dx) > 5) {
-					this.horizontalSwipe = true;
-					return true;
-				}
-
-				if (dy > 5) {
-					this.horizontalSwipe = false;
-					return true;
-				}
-
-				return false;
-			},
-
-			onPanResponderGrant: () => {
-				if (this.horizontalSwipe) {
-					this.pan.setOffset(this.pan._value);
-					this.pan.setValue(0);
-				}
-
-				this.pause();
-				this.setBackOpacity(0);
-			},
-
-			onPanResponderMove: (e, { dx, dy }) => {
-				if (this.horizontalSwipe) {
-					this.pan.setValue(-dx);
-				} else {
-					this.verticalSwipe.setValue(dy);
-				}
-			},
-
-			onPanResponderRelease: (e, { dx, dy }) => {
-				if (!this.horizontalSwipe) {
-					if (dy > VERTICAL_THRESHOLD) return this.leaveStories();
-					this.play();
-					return this.resetVerticalSwipe();
-				}
-
-				this.pan.flattenOffset();
-				const deckIdx = this.state.deckIdx;
-
-				if (dx > HORIZONTAL_THRESHOLD) { // previous deck
-					if (deckIdx == 0)
-						return this.leaveStories();
-					
-					return this.animateDeck(width * (deckIdx - 1), true);
-				}
-				
-				if (dx < -HORIZONTAL_THRESHOLD) { // -> next deck
-					if (deckIdx == this.state.stories.length - 1)
-						return this.leaveStories();
-
-					return this.animateDeck(width * (deckIdx + 1), true);
-				}
-
-				this.play();
-				return this.animateDeck(width * deckIdx);
-			}
-		});
-	}
-
-	leaveStories() {
-		if (this.horizontalSwipe) {
-			this.animateDeck((width * this.state.deckIdx), true);
-		} else {
-			this.resetVerticalSwipe();
-		}
-
-		this.props.close();
-	}
-
-	resetVerticalSwipe() {
-		Animated.spring(this.verticalSwipe, { toValue: 0 }).start();
-	}
-
-
-	///////////////////////////////////
-	// Indicator Methods
-	///////////////////////////////////
-
 	componentDidMount() {
 		StatusBar.setHidden(true);
-		// this.animateIndicator();
 	}
 
-	animateIndicator = (reset=true) => {
-		if (reset) this.indicatorAnim.setValue(0);
-
-		requestAnimationFrame(() => {
-			Animated.timing(this.indicatorAnim, {
-				toValue: 1,
-				duration: 5000 * (1-this.indicatorAnim._value),
-			}).start(({ finished }) => {
-				if (finished) this.onNextItem();
-			});
-		});
-	}
-
-	pause = () => {
-		if (this.state.paused) return;
-
-		this.setState({ paused: true });
-		this.indicatorAnim.stopAnimation();
-	}
-
-	play = () => {
-		if (this.state.paused) {
-			this.setState({ paused: false });
-			this.animateIndicator(false);
-		}
-	}
-
-	
-	///////////////////////////////////
-	// Story Methods
-	///////////////////////////////////
-
-	onNextItem = () => {
-		if (this.state.paused) return this.play();
-
-		const story = this.state.stories[this.state.deckIdx];
-
-		if (story.idx >= story.items.length - 1)
-			return this.onNextDeck();
-
-		this.animateIndicator();
-		this.updateStoryIdx(story.idx + 1);
-	}
-
-	onPrevItem = () => {
-		if (this.state.backOpacity == 1) this.setBackOpacity(0);
-
-		const story = this.state.stories[this.state.deckIdx];
-
-		if (story.idx == 0)
-			return this.onPrevDeck();
-
-		this.animateIndicator();
-		this.updateStoryIdx(story.idx - 1);
-	}
-
-	updateStoryIdx(idx) {
-		const story = Object.assign({}, this.state.stories[this.state.deckIdx]);
-		story.idx = idx;
-
-		const stories = [
-			...this.state.stories.slice(0, this.state.deckIdx),
-			story,
-			...this.state.stories.slice(this.state.deckIdx + 1, this.state.stories.length),
-		]
-
-		this.setState({ stories });
-	}
-
-
-
-	///////////////////////////////////
-	// Deck Methods
-	///////////////////////////////////
-
-	onNextDeck() {
-		if (this.state.deckIdx >= this.state.stories.length - 1) return this.leaveStories();;
-		this.animateDeck((this.state.deckIdx + 1)*width, true);
-	}
-
-	onPrevDeck() {
-		if (this.state.deckIdx == 0) return this.leaveStories();
-		this.animateDeck((this.state.deckIdx - 1)*width, true);
-	}
-
-	animateDeck(toValue, reset=false) {
-		if (reset) {
-			this.setState({
-				animating: true,
-				deckIdx: parseInt(toValue / width)
-			});
-				
-			this.animateIndicator();
-		}
-
-		Animated.spring(this.pan, {
-			toValue, friction: 9
-		}).start(() => {
-			if (reset) {
-				this.setState({ animating: false });
-			}
-		});
-	}
-
-
-	setBackOpacity = (backOpacity) => {
-		this.setState({ backOpacity });
-	}
 
 	///////////////////////////////////
 	// Render
@@ -234,21 +20,21 @@ export default class extends React.Component {
 
 	render() {
 		return (
-			<View style={styles.container} {...this._panResponder.panHandlers}>
-				{this.state.stories.map((story, idx) => (
+			<View style={styles.container} {...store.panResponder.panHandlers}>
+				{store.stories.map((story, idx) => (
 					<Animated.View
 						key={idx} 
-						pointerEvents={this.state.animating ? 'none' : 'auto'}
+						pointerEvents={store.animating ? 'none' : 'auto'}
 						style={[styles.deck, {
 							transform: [
 								{
-									translateX: this.pan.interpolate({
+									translateX: store.horizontalSwipe.interpolate({
 										inputRange: [width*(idx-1), width*idx, width*(idx+1)],
 										outputRange: [width, 0, -width]
 									}),
 								},
 								{
-									translateY: this.verticalSwipe.interpolate({
+									translateY: store.verticalSwipe.interpolate({
 										inputRange: [-1, 0, height],
 										outputRange: [0, 0, height/2]
 									}),
@@ -256,17 +42,7 @@ export default class extends React.Component {
 							]
 						}]
 					}>
-						<Story
-							story={story}
-							animateIndicator={this.animateIndicator}
-							indicatorAnim={this.indicatorAnim}
-							currentDeck={this.state.deckIdx == idx}
-							onNextItem={this.onNextItem}
-							onPrevItem={this.onPrevItem}
-							onPressIn={this.pause}
-							setBackOpacity={this.setBackOpacity}
-							backOpacity={this.state.backOpacity}
-						/>
+						<Story story={story} currentDeck={store.deckIdx == idx} />
 					</Animated.View>
 				))}
 			</View>

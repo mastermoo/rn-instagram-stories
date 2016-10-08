@@ -1,24 +1,26 @@
 import React from 'react';
 import { StyleSheet, View, Dimensions, TouchableWithoutFeedback } from 'react-native';
+import { observer } from 'mobx-react/native';
+import store from './stores/app';
 import { Components } from 'exponent';
 import Indicator from './indicator';
-
 import Image from 'react-native-image-progress';
 import CircleSnail from 'react-native-progress/CircleSnail';
-const circleSnailProps = { thickness: 1, color: '#ddd', size: 80 };
 
+const circleSnailProps = { thickness: 1, color: '#ddd', size: 80 };
 const { width, height } = Dimensions.get('window');
 
 
+@observer
 export default class extends React.Component {
 	render() {
-		const { story, onNextItem, onPressIn } = this.props;
+		const { story } = this.props;
 		
 		return (
 			<TouchableWithoutFeedback
-				onPress={onNextItem}
+				onPress={store.onNextItem}
 				delayPressIn={200}
-				onPressIn={onPressIn}
+				onPressIn={store.pause}
 			>
 				<Image
 					source={{ uri: story.items[story.idx].src }}
@@ -34,7 +36,7 @@ export default class extends React.Component {
 	}
 
 	renderIndicators() {
-		const { story, currentDeck, indicatorAnim } = this.props;
+		const { story, currentDeck } = this.props;
 
 		return (
 			<View style={styles.indicatorWrap}>
@@ -47,13 +49,9 @@ export default class extends React.Component {
 				<View style={styles.indicators}>
 					{story.items.map((item, i) => (
 						<Indicator
-							key={i}
+							key={i} i={i}
 							animate={currentDeck && story.idx == i}
-							seen={story.idx > i}
-							coming={story.idx <= i}
-							anim={indicatorAnim}
 							story={story}
-							i={i}
 						/>
 					))}
 				</View>
@@ -62,13 +60,11 @@ export default class extends React.Component {
 	}
 
 	renderBackButton() {
-		const { onPrevItem, backOpacity, setBackOpacity } = this.props;
-
 		return (
 			<TouchableWithoutFeedback
-				onPress={onPrevItem}
-				onPressIn={() => setBackOpacity(1)}
-				onLongPress={() => setBackOpacity(0)}
+				onPress={store.onPrevItem}
+				onPressIn={() => store.setBackOpacity(1)}
+				onLongPress={() => store.setBackOpacity(0)}
 			>
 				<Components.LinearGradient
 					colors={['rgba(0,0,0,0.33)', 'transparent']}
@@ -76,7 +72,7 @@ export default class extends React.Component {
 					start={[0, 0]}
 					end={[1, 0]}
 					style={[styles.back, {
-						opacity: backOpacity
+						opacity: store.backOpacity
 					}]}
 				/>
 			</TouchableWithoutFeedback>
