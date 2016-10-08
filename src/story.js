@@ -22,16 +22,17 @@ export default class extends React.Component {
 				delayPressIn={200}
 				onPressIn={store.pause}
 			>
-				<Image
-					source={{ uri: story.items[story.idx].src }}
-					style={styles.deck}
-					indicator={CircleSnail}
-					indicatorProps={circleSnailProps}
-				>
+				<View style={{flex: 1}}>
+					<Image
+						source={{ uri: story.items[story.idx].src }}
+						style={styles.deck}
+						indicator={CircleSnail}
+						indicatorProps={circleSnailProps}
+					/>
 					{this.renderIndicators()}
 					{this.renderCloseButton()}
 					{this.renderBackButton()}
-				</Image>
+				</View>
 			</TouchableWithoutFeedback>
 		);
 	}
@@ -95,9 +96,6 @@ export default class extends React.Component {
 const styles = StyleSheet.create({
 	deck: {
 		width, height,
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
 		backgroundColor: 'white',
 	},
 
@@ -136,14 +134,16 @@ const styles = StyleSheet.create({
 
 	closeButton: {
 		position: 'absolute',
-		top: 32,
-		right: 26,
-		backgroundColor: 'pink'
+		top: 0,
+		right: 0,
+		width: 70,
+		height: 70,
+		zIndex: 1,
 	},
 	closeCross: {
 		position: 'absolute',
-		top: 0, left: 0,
-		width: 16,
+		top: 32, right: 8,
+		width: 20,
 		height: 1,
 		backgroundColor: '#fff'
 	}

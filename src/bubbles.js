@@ -39,7 +39,7 @@ export default class extends React.Component {
 	}
 }
 
-const bubbleSize = 54;
+const bubbleSize = 70;
 
 const styles = StyleSheet.create({
 	container: {
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	bubbles: {
-		height: 70,
+		height: 90,
 		flexDirection: 'row',
 		paddingHorizontal: 5,
 		backgroundColor: '#f3f3f3',
@@ -63,6 +63,6 @@ const styles = StyleSheet.create({
 		width: bubbleSize,
 		height: bubbleSize,
 		borderRadius: bubbleSize/2,
-		marginHorizontal: 5,
+		marginHorizontal: 6,
 	},
 });
