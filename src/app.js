@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import { observer } from 'mobx-react/native';
 import Stories from './stories';
-import store from './stores/app';
+import store from './store';
 import Bubbles from './bubbles';
 
 const { width, height } = Dimensions.get('window');

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View, Image, TouchableWithoutFeedback } from 'react-native';
-import store from './stores/app';
+import store from './store';
 
 export default class extends React.Component {
 	render() {

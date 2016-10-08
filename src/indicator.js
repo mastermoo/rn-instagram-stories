@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
 import { observer } from 'mobx-react/native';
-import store from './stores/app';
+import store from './store';
 
 
 @observer
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
 	line: {
 		flex: 1,
 		backgroundColor: 'rgba(255,255,255,0.4)',
-		marginHorizontal: 2,
+		marginHorizontal: 1,
 		height: 2,
 	},
 	progress: {

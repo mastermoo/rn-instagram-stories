@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import { observer } from 'mobx-react/native';
-import store from './stores/app';
+import store from './store';
 import { Components } from 'exponent';
 import Indicator from './indicator';
 import Image from 'react-native-image-progress';
@@ -29,8 +29,20 @@ export default class extends React.Component {
 					indicatorProps={circleSnailProps}
 				>
 					{this.renderIndicators()}
+					{this.renderCloseButton()}
 					{this.renderBackButton()}
 				</Image>
+			</TouchableWithoutFeedback>
+		);
+	}
+
+	renderCloseButton() {
+		return (
+			<TouchableWithoutFeedback onPress={store.dismissCarousel}>
+				<View style={styles.closeButton}>
+					<View style={[styles.closeCross, { transform: [{rotate: '45deg'}]}]} />
+					<View style={[styles.closeCross, { transform: [{rotate: '-45deg'}]}]} />
+				</View>
 			</TouchableWithoutFeedback>
 		);
 	}
@@ -41,7 +53,7 @@ export default class extends React.Component {
 		return (
 			<View style={styles.indicatorWrap}>
 				<Components.LinearGradient
-					colors={['rgba(0,0,0,0.2)', 'transparent']}
+					colors={['rgba(0,0,0,0.33)', 'transparent']}
 					locations={[0, 0.95]}
 					style={styles.indicatorBg}
 				/>
@@ -121,4 +133,18 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		width: 90,
 	},
+
+	closeButton: {
+		position: 'absolute',
+		top: 32,
+		right: 26,
+		backgroundColor: 'pink'
+	},
+	closeCross: {
+		position: 'absolute',
+		top: 0, left: 0,
+		width: 16,
+		height: 1,
+		backgroundColor: '#fff'
+	}
 });

@@ -1,6 +1,6 @@
 import { observable, action, computed } from 'mobx';
 import { LayoutAnimation, Animated, Dimensions, PanResponder } from 'react-native';
-import data from '../data';
+import data from './data';
 
 const { width, height } = Dimensions.get('window');
 const VERTICAL_THRESHOLD = 80;
@@ -14,7 +14,6 @@ class Store {
 	@observable stories = data;
 	@observable deckIdx = 0;
 	@observable paused = false;
-	@observable animating = false;
 	@observable backOpacity = 0;
 
 	@observable indicatorAnim = new Animated.Value(0);
@@ -131,10 +130,6 @@ class Store {
 	// Setter Methods
 	///////////////////////////////////
 
-	@action setAnimating = (animating) => {
-		this.animating = animating;
-	}
-
 	@action setPaused = (paused) => {
 		this.paused = paused;
 	}
@@ -233,16 +228,13 @@ class Store {
 
 	@action animateDeck(toValue, reset=false) {
 		if (reset) {
-			this.setAnimating(true);
 			this.setDeckIdx(parseInt(toValue / width));
 			this.animateIndicator();
 		}
 
 		Animated.spring(this.horizontalSwipe, {
 			toValue, friction: 9
-		}).start(() => {
-			if (reset) this.setAnimating(false);
-		});
+		}).start();
 	}
 
 
