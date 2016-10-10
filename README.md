@@ -1,7 +1,7 @@
 # Instagram Stories
 React Native UI Challenge #3.
 
-Read this article: [Building a Instagram Stories in React Native.](https://medium.com/@yousefkama/react-native-ui-challenge-2-be24f72e6a68)
+Read this article: [Building a Instagram Stories in React Native.](https://medium.com/@yousefkama/building-instagram-stories-d14763682e98)
 
 
 # Challenge
@@ -13,9 +13,7 @@ The challenge was to build a demo of Instagrams new feature "Stories".
 
 # Demo
 
-To see it in action go to [Vimeo](https://vimeo.com/186306184) or [Medium](https://medium.com/@yousefkama/react-native-ui-challenge-2-be24f72e6a68)
-
-![Demo](http://i.giphy.com/l0HlCEJXGkpZVriCI.gif)
+To see it in action go to [Vimeo](https://vimeo.com/186306184) or [Medium](https://medium.com/@yousefkama/building-instagram-stories-d14763682e98)
 
 
 # Try it out

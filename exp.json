@@ -1,6 +1,6 @@
 {
   "name": "Instagram Stories",
-  "description": "UI Challenge #3: Instagram Stories Clone written in React Native. https://medium.com/@yousefkama/react-native-ui-challenge-2-be24f72e6a68 for a writeup, source at https://github.com/mastermoo/rn-instagram-stories",
+  "description": "UI Challenge #3: Instagram Stories Clone written in React Native. https://medium.com/@yousefkama/building-instagram-stories-d14763682e98 for a writeup, source at https://github.com/mastermoo/rn-instagram-stories",
   "slug": "instagram-stories",
   "sdkVersion": "10.0.0",
   "version": "1.0.0",
