@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View, Dimensions, TouchableWithoutFeedback, UIManager, Platform } from 'react-native';
 import { observer } from 'mobx-react/native';
 import Stories from './stories';
 import store from './store';
@@ -9,6 +9,11 @@ const { width, height } = Dimensions.get('window');
 
 @observer
 export default class extends React.Component {
+	componentWillMount() {
+		if (Platform.OS == 'android')
+			UIManager.setLayoutAnimationEnabledExperimental(true);
+	}
+
 	render() {
 		return (
 			<View style={styles.container}>
