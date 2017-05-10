@@ -7,11 +7,11 @@
   "main": "main.js",
   "dependencies": {
     "babel-preset-react-native-stage-0": "^1.0.1",
-    "exponent": "~10.0.0",
     "mobx": "^2.6.0",
     "mobx-react": "^3.5.8",
-    "react": "~15.3.1",
-    "react-native": "github:exponentjs/react-native#sdk-10.1.0",
+    "expo": "16.0.0",
+    "react": "16.0.0-alpha.6",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-16.0.0.tar.gz",
     "react-native-image-progress": "^0.6.0",
     "react-native-progress": "^3.1.0"
   }
