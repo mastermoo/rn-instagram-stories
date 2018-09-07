@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import { observer } from 'mobx-react/native';
 import store from './store';
-import { Components } from 'exponent';
+import { LinearGradient } from 'expo';
 import Indicator from './indicator';
 import Image from 'react-native-image-progress';
 import CircleSnail from 'react-native-progress/CircleSnail';
@@ -15,7 +15,7 @@ const { width, height } = Dimensions.get('window');
 export default class extends React.Component {
 	render() {
 		const { story } = this.props;
-		
+
 		return (
 			<TouchableWithoutFeedback
 				onPress={store.onNextItem}
@@ -53,7 +53,7 @@ export default class extends React.Component {
 
 		return (
 			<View style={styles.indicatorWrap}>
-				<Components.LinearGradient
+				<LinearGradient
 					colors={['rgba(0,0,0,0.33)', 'transparent']}
 					locations={[0, 0.95]}
 					style={styles.indicatorBg}
@@ -79,7 +79,7 @@ export default class extends React.Component {
 				onPressIn={() => store.setBackOpacity(1)}
 				onLongPress={() => store.setBackOpacity(0)}
 			>
-				<Components.LinearGradient
+				<LinearGradient
 					colors={['rgba(0,0,0,0.33)', 'transparent']}
 					locations={[0, 0.85]}
 					start={[0, 0]}
